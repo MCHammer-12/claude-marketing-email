@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+
+# Loose merchant test assets — not part of the skill bundle
+*-hero.png
+*-hero.jpg
+*.heic
+
+# Node
+node_modules/
+*.log
+
+# Local sandbox state
+.env
+.env.local
+
+# Tool caches
+.playwright-mcp/
+.claude/

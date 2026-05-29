@@ -1,0 +1,66 @@
+{
+  "_comment_": "Example email template. Order confirmation (transactional). Use as a reference for top-level shape and per-section field presence. For AI-generated MARKETING emails, set templateType=default, category=Marketing, schemaType=MARKETING_EMAIL.",
+  "name": "Order Confirmation",
+  "subject": "Your [Merchant Name] order is confirmed!",
+  "templateType": "transactional",
+  "category": "Order tracking",
+  "schemaType": "ORDER_TRACKING",
+  "emailBackgroundColor": "#ffffff",
+  "contentBackgroundColor": "#f5f5f5",
+  "sections": [
+    {
+      "type": "header",
+      "headerType": "logo",
+      "layout": "center",
+      "blockId": "67817b4cd5007b998f257a5d",
+      "sectionPadding": { "top": 0, "right": 0, "bottom": 0, "left": 0 },
+      "sectionColor": "#FFFFFF",
+      "imageUrl": "",
+      "text": "",
+      "textColor": "#000000",
+      "fontSize": 16,
+      "fontFamily": "Arial",
+      "logoHeight": 100,
+      "imageHeight": 55
+    },
+    {
+      "type": "text",
+      "blockId": "67817b4cd5007b998f257a5f",
+      "sectionPadding": { "top": 13, "right": 13, "bottom": 13, "left": 13 },
+      "sectionColor": "#ffffff",
+      "textColor": "#000000",
+      "fontSize": 12,
+      "fontFamily": "Arial",
+      "linkColor": "#1E90FF",
+      "text": "<p style=\"text-align: center;\"><span>Thanks for your order!</span></p>"
+    },
+    {
+      "type": "order-summary",
+      "schemaFieldName": "orderSummary",
+      "blockId": "67817b4cd5007b998f257a63",
+      "sectionPadding": { "top": 40, "right": 40, "bottom": 40, "left": 40 },
+      "sectionColor": "#ffffff",
+      "textColor": "#000000",
+      "fontFamily": "Arial",
+      "showOrderInformation": true,
+      "showCostSummary": true,
+      "showPaymentInformation": false
+    },
+    {
+      "type": "footer",
+      "schemaFieldName": "unsubscribeLink",
+      "blockId": "67817b4cd5007b998f257a68",
+      "sectionColor": "#ffffff",
+      "textColor": "#000000",
+      "alignment": "center",
+      "fontSize": 12,
+      "useTemplateAddress": false
+    }
+  ],
+  "address": {
+    "businessAddress": "",
+    "legalAddress": "123 Example St",
+    "cityStateZip": "Anytown, State 00000",
+    "country": "United States"
+  }
+}
