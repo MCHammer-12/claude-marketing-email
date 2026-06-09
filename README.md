@@ -74,7 +74,8 @@ Or, to stand up a new store's core flows at once:
 > [what]. Brand voice: [tone]. Include welcome, abandoned cart, and
 > browse abandonment.
 
-Claude picks up the right skill, asks for your merchant session JWT,
+Claude picks up the right skill, reads your locally-stored session JWT
+(from `~/.redo/jwt` — it never asks you to paste it into the chat),
 walks you through generation, and writes to the Redo API. You get the
 builder URL(s) back.
 
@@ -84,7 +85,8 @@ builder URL(s) back.
   Claude.ai
 - A **merchant session JWT** for the Redo team you want to write to —
   grab it from your browser devtools while logged into
-  `app.getredo.com`. Full instructions in [`INSTALL.md`](INSTALL.md).
+  `app.getredo.com`, then save it to `~/.redo/jwt` (never paste it into
+  Claude). Full instructions in [`INSTALL.md`](INSTALL.md).
 - **Marketing permissions** on that team:
   - Email skill: `MANAGE_TEMPLATES`
   - Welcome / starter-pack skills:

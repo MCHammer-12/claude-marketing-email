@@ -60,8 +60,9 @@ deserve their own pass):
 
 1. **Brand description** — what they sell, voice, hero imagery, real
    product names. Feeds the archetype router + every email's content.
-2. **Session JWT** — needs `MANAGE_TEMPLATES` + `MANAGE_CAMPAIGNS` +
-   `MANAGE_AUTOMATIONS`.
+2. **Session JWT** — read from `~/.redo/jwt`, where the user stores it once;
+   never ask them to paste it into the chat (see INSTALL.md). Needs
+   `MANAGE_TEMPLATES` + `MANAGE_CAMPAIGNS` + `MANAGE_AUTOMATIONS`.
 3. **Which flows** — confirm the default (welcome + cart + browse), offer
    checkout abandonment as an add-on.
 4. **Discount** — for the welcome series (default `WELCOME10`, 10%, 14-day
@@ -73,10 +74,22 @@ deserve their own pass):
 
 ## Pre-flight checks (BEFORE any API call)
 
-Decode the JWT:
+**Load the token from the user's local store — never ask the user to paste the
+JWT into the chat, and never echo it** (no `echo "$TOKEN"`, no `curl -v`). It
+must stay out of the conversation. If `~/.redo/jwt` is missing, stop and point
+the user to INSTALL.md → "Get and store your session JWT"; do not accept a
+pasted token.
 
 ```bash
-echo "$TOKEN" | cut -d. -f2 | base64 -d 2>/dev/null | jq
+TOKEN="$(cat ~/.redo/jwt)"   # Keychain alt: security find-generic-password -s redo-jwt -w
+```
+
+Shell state doesn't persist between commands, so re-set `TOKEN` at the start of
+every block that calls the API. Decode and check the payload — prints only the
+claims, never the token:
+
+```bash
+cut -d. -f2 ~/.redo/jwt | base64 -d 2>/dev/null | jq '{aud, exp, sub}'
 ```
 
 - `aud` = `mcht/<teamId>` → capture `teamId`.

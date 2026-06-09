@@ -36,7 +36,8 @@ type contracts are inlined in their `references/`.
 
 - **Claude Code** (`npm install -g @anthropic-ai/claude-code` if you
   don't have it) or **Claude.ai** with skill upload
-- A **merchant session JWT** with the right permissions (see below).
+- A **merchant session JWT** with the right permissions (see below),
+  stored in a local file the skills read — **never pasted into Claude**.
   Each skill checks the JWT and tells you if it's missing perms.
 
 ## Install (Claude Code)
@@ -82,7 +83,7 @@ fresh session) so the new skills are picked up.
 3. Upload each `.zip`
 4. Enable them for the conversation you want to use them in
 
-## Get a merchant session JWT
+## Get and store your session JWT
 
 The skills write into a specific merchant's Redo account. They need a
 session token for a user on that team with the right permissions.
@@ -99,18 +100,37 @@ session token for a user on that team with the right permissions.
 
 1. Log into the merchant app at `https://app.getredo.com` as a user with
    the required permissions
-2. Open browser devtools (Cmd+Opt+I on macOS) → Application tab →
-   Cookies (or Storage → Local Storage, depending on the browser)
-3. Find the auth cookie / token. In Chrome devtools you can also grab it
-   from the Network tab: any XHR to `app-server.getredo.com` carries an
-   `Authorization:` header with the JWT
+2. Open browser devtools (Cmd+Opt+I on macOS) → Network tab
+3. Click any XHR to `app-server.getredo.com` — its request headers carry
+   an `Authorization:` header with the JWT
 4. Copy the value (the raw JWT — three base64 chunks separated by dots,
    starts with `eyJ...`)
 
-**Verify it has the right shape:**
+**Store it locally — do NOT paste it into Claude.** Your session JWT is a
+live credential; pasting it into the chat puts it in the conversation
+transcript. Save it to a private file **in your own terminal**, and the
+skills read it from there — the token never enters a conversation:
 
 ```bash
-echo "$TOKEN" | cut -d. -f2 | base64 -d 2>/dev/null | jq
+mkdir -p ~/.redo && chmod 700 ~/.redo
+(umask 077; cat > ~/.redo/jwt)     # paste the JWT, press Enter, then Ctrl-D
+```
+
+This writes an owner-only file; the paste never hits the chat or your
+shell history. Prefer macOS Keychain (also keeps it off your screen)?
+
+```bash
+security add-generic-password -a "$USER" -s redo-jwt -w   # prompts for the value, no echo
+```
+
+…then tell Claude to read it with
+`security find-generic-password -s redo-jwt -w` instead of `cat ~/.redo/jwt`.
+
+**Verify it has the right shape** — reads from the file and prints only the
+claims, never the token:
+
+```bash
+cut -d. -f2 ~/.redo/jwt | base64 -d 2>/dev/null | jq '{aud, exp, sub}'
 ```
 
 You should see:
@@ -118,7 +138,7 @@ You should see:
 - `exp` (unix seconds) in the future
 - `sub` — your user ID (used as `createdByUserId` for automations)
 
-If `exp` has passed, log out and back in to refresh.
+If `exp` has passed, log out and back in, and re-save the file.
 
 ## Smoke test
 
@@ -130,8 +150,9 @@ Brand voice: friendly, casual. One hero image, one CTA. Use coral
 (#FF6B5C) as the accent color.
 ```
 
-Claude should invoke `create-redo-email`, ask for your JWT, ask you to
-confirm name/subject/archetype, show a preview, and on "go" POST to
+Claude should invoke `create-redo-email`, read your token from
+`~/.redo/jwt` (it never asks you to paste it), ask you to confirm
+name/subject/archetype, show a preview, and on "go" POST to
 `createEmailTemplate` and return the builder URL.
 
 For the welcome skill:

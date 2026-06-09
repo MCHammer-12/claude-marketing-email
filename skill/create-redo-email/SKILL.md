@@ -35,8 +35,9 @@ trap section at the end of this file for the full distinction.
    summer sale for sustainable t-shirts, friendly tone, hero image, single
    CTA." If brief, ask the user to expand on tone, products, hero imagery,
    discount details, etc. before generating.
-2. **Session JWT** — issued for a user with
-   `MarketingPermissions.MANAGE_TEMPLATES`.
+2. **Session JWT** — read from `~/.redo/jwt`, where the user stores it once;
+   never ask them to paste it into the chat (see INSTALL.md). Must be issued
+   for a user with `MarketingPermissions.MANAGE_TEMPLATES`.
 3. **Template name** (optional) — defaults to a short title derived from the
    description (e.g. `Summer Sale 20% Off`). Always confirm with the user.
 4. **Subject line** (optional) — defaults to a derived subject. Confirm with
@@ -53,10 +54,22 @@ trap section at the end of this file for the full distinction.
 
 ## Pre-flight checks (BEFORE any API call)
 
-Decode the JWT payload:
+**Load the token from the user's local store — never ask the user to paste the
+JWT into the chat, and never echo it** (no `echo "$TOKEN"`, no `curl -v`). It
+must stay out of the conversation. If `~/.redo/jwt` is missing, stop and point
+the user to INSTALL.md → "Get and store your session JWT"; do not accept a
+pasted token.
 
 ```bash
-echo "$TOKEN" | cut -d. -f2 | base64 -d 2>/dev/null | jq
+TOKEN="$(cat ~/.redo/jwt)"   # Keychain alt: security find-generic-password -s redo-jwt -w
+```
+
+Shell state doesn't persist between commands, so re-set `TOKEN` at the start of
+every block that calls the API. Decode and check the payload — prints only the
+claims, never the token:
+
+```bash
+cut -d. -f2 ~/.redo/jwt | base64 -d 2>/dev/null | jq '{aud, exp, sub}'
 ```
 
 Verify:
