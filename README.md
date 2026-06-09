@@ -85,8 +85,9 @@ builder URL(s) back.
   Claude.ai
 - A **merchant session JWT** for the Redo team you want to write to —
   grab it from your browser devtools while logged into
-  `app.getredo.com`, then save it to `~/.redo/jwt` (never paste it into
-  Claude). Full instructions in [`INSTALL.md`](INSTALL.md).
+  `app.getredo.com`, then run `./connect.sh` to save it to `~/.redo/jwt`
+  (never paste it into Claude). Full instructions in
+  [`INSTALL.md`](INSTALL.md).
 - **Marketing permissions** on that team:
   - Email skill: `MANAGE_TEMPLATES`
   - Welcome / starter-pack skills:

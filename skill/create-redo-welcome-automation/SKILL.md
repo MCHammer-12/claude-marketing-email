@@ -70,9 +70,9 @@ automation enabled in one shot — no separate `setAutomationEnabled`.
 
 **Load the token from the user's local store — never ask the user to paste the
 JWT into the chat, and never echo it** (no `echo "$TOKEN"`, no `curl -v`). It
-must stay out of the conversation. If `~/.redo/jwt` is missing, stop and point
-the user to INSTALL.md → "Get and store your session JWT"; do not accept a
-pasted token.
+must stay out of the conversation. If `~/.redo/jwt` is missing, stop and tell
+the user to run `connect.sh` from the claude-marketing-email repo (details in
+INSTALL.md); do not accept a pasted token.
 
 ```bash
 TOKEN="$(cat ~/.redo/jwt)"   # Keychain alt: security find-generic-password -s redo-jwt -w

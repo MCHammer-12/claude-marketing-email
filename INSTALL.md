@@ -108,22 +108,32 @@ session token for a user on that team with the right permissions.
 
 **Store it locally — do NOT paste it into Claude.** Your session JWT is a
 live credential; pasting it into the chat puts it in the conversation
-transcript. Save it to a private file **in your own terminal**, and the
-skills read it from there — the token never enters a conversation:
+transcript. Save it locally instead — the skills read it from there and it
+never enters a conversation.
+
+**Easiest — run the connect helper** from your clone of this repo, in your
+own terminal:
 
 ```bash
+./connect.sh        # prompts for the JWT (hidden input), saves it to ~/.redo/jwt
+```
+
+That's the whole setup. The token is entered with hidden input, written to
+an owner-only file, and never touches the chat or your shell history.
+
+Prefer to do it by hand, or store it in macOS Keychain instead? Either of
+these works too:
+
+```bash
+# plain file
 mkdir -p ~/.redo && chmod 700 ~/.redo
 (umask 077; cat > ~/.redo/jwt)     # paste the JWT, press Enter, then Ctrl-D
+
+# or macOS Keychain (also keeps it off your screen)
+security add-generic-password -a "$USER" -s redo-jwt -w
 ```
 
-This writes an owner-only file; the paste never hits the chat or your
-shell history. Prefer macOS Keychain (also keeps it off your screen)?
-
-```bash
-security add-generic-password -a "$USER" -s redo-jwt -w   # prompts for the value, no echo
-```
-
-…then tell Claude to read it with
+If you use Keychain, tell Claude to read it with
 `security find-generic-password -s redo-jwt -w` instead of `cat ~/.redo/jwt`.
 
 **Verify it has the right shape** — reads from the file and prints only the
